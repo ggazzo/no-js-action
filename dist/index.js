@@ -38,7 +38,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
 const github = __importStar(__nccwpck_require__(438));
 const action_1 = __nccwpck_require__(231);
-const wait_1 = __nccwpck_require__(817);
 const { GITHUB_REPOSITORY = '', GITHUB_REF = '' } = process.env;
 const [owner, repo] = GITHUB_REPOSITORY.split('/');
 const issue_number = GITHUB_REF.split('/')[2];
@@ -47,7 +46,7 @@ const octokit = new action_1.Octokit();
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const payload = JSON.stringify(github.context.payload, undefined, 2);
+            const payload = JSON.stringify(github.context, undefined, 2);
             core.debug(`The event payload: ${payload}`);
             if (!github.context.payload.pull_request) {
                 throw new Error('Not a pull request');
@@ -59,12 +58,20 @@ function run() {
                 repo,
                 pull_number: number,
             });
-            core.debug(JSON.stringify(files, null, 2));
             const ms = core.getInput('milliseconds');
-            core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-            core.debug(new Date().toTimeString());
-            yield wait_1.wait(parseInt(ms, 10));
-            core.debug(new Date().toTimeString());
+            const invalidFiles = files.data.filter((file) => file.status === 'added' &&
+                (file.filename.endsWith('.js') || file.filename.endsWith('.jsx')));
+            if (invalidFiles.length > 0) {
+                const message = `${invalidFiles.length} js(x)? files are added, please convert to ts(x).`;
+                yield octokit.pulls.createReview({
+                    owner,
+                    event: 'REQUEST_CHANGES',
+                    repo,
+                    pull_number: number,
+                    body: message,
+                });
+                throw new Error(message);
+            }
             core.setOutput('time', new Date().toTimeString());
         }
         catch (error) {
@@ -73,37 +80,6 @@ function run() {
     });
 }
 run();
-
-
-/***/ }),
-
-/***/ 817:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wait = void 0;
-function wait(milliseconds) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            if (isNaN(milliseconds)) {
-                throw new Error('milliseconds not a number');
-            }
-            setTimeout(() => resolve('done!'), milliseconds);
-        });
-    });
-}
-exports.wait = wait;
 
 
 /***/ }),
