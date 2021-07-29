@@ -14,7 +14,7 @@ const octokit = new Octokit();
 
 async function run(): Promise<void> {
   try {
-    const payload = JSON.stringify(github.context.payload, undefined, 2);
+    const payload = JSON.stringify(github.context, undefined, 2);
     core.debug(`The event payload: ${payload}`);
     if (!github.context.payload.pull_request) {
       throw new Error('Not a pull request');
