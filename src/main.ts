@@ -37,6 +37,7 @@ async function run(): Promise<void> {
     core.setOutput('time', new Date().toTimeString());
 
     const payload = JSON.stringify(github.context.payload, undefined, 2);
+
     console.log(`The event payload: ${payload}`);
   } catch (error) {
     core.setFailed((error as any).message);
