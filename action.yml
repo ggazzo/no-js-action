@@ -6,6 +6,10 @@ inputs:
     required: true
     description: 'input description here'
     default: 'default value if applicable'
+  configuration-path:
+    description: 'config file path'
+    required: true
+    default: '.github/no-js-action-config.json'
 runs:
   using: 'node12'
   main: 'dist/index.js'
