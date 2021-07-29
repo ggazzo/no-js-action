@@ -14,18 +14,10 @@ const octokit = new Octokit();
 
 async function run(): Promise<void> {
   try {
-    const payload = JSON.stringify(github.context, undefined, 2);
-    core.debug(`The event payload: ${payload}`);
-    if (!github.context.payload.pull_request) {
-      throw new Error('Not a pull request');
-    }
-    // const { ignore } = await getConfig();
-    const { number } = github.context.payload.pull_request;
-
     const files = await octokit.pulls.listFiles({
       owner,
       repo,
-      pull_number: number,
+      pull_number: parseInt(issue_number),
     });
 
     const ms: string = core.getInput('milliseconds');
@@ -41,7 +33,7 @@ async function run(): Promise<void> {
         owner,
         event: 'REQUEST_CHANGES',
         repo,
-        pull_number: number,
+        pull_number: parseInt(issue_number),
         body: message,
       });
       throw new Error(message);
