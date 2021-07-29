@@ -22,13 +22,23 @@ async function run(): Promise<void> {
 
     const ms: string = core.getInput('milliseconds');
 
-    const invalidFiles = files.data.filter(
-      (file) =>
-        file.status === 'added' &&
-        (file.filename.endsWith('.js') || file.filename.endsWith('.jsx'))
-    );
+    const invalidFiles = files.data
+      .filter(
+        (file) =>
+          file.status === 'added' &&
+          (file.filename.endsWith('.js') || file.filename.endsWith('.jsx'))
+      )
+      .map((file) => file.filename);
     if (invalidFiles.length > 0) {
-      const message = `${invalidFiles.length} js(x)? files are added, please convert to ts(x).`;
+      const js = invalidFiles.filter((name) => name.endsWith('.js'));
+      const jsx = invalidFiles.filter((name) => name.endsWith('.jsx'));
+      const jsMessage = js.length && `${js.length} .js`;
+      const jsxMessage = jsx.length && `${jsx.length} .jsx`;
+
+      const message = `You have added ${[jsMessage, jsxMessage].join(
+        ' and '
+      )} files, please convert to ts(x). \n ${invalidFiles.join('\n')}`;
+
       await octokit.pulls.createReview({
         owner,
         event: 'REQUEST_CHANGES',
