@@ -37,10 +37,8 @@ async function run(): Promise<void> {
 
     const { added } = await getJSON(configPath);
 
-    const ms: string = core.getInput('milliseconds');
-
     const invalidFiles = files.data
-      .filter((file) => {
+      .filter((file: { status: string; filename: any }) => {
         if (file.status === 'added') {
           return false;
         }
@@ -86,14 +84,20 @@ async function run(): Promise<void> {
       repo,
       pull_number: parseInt(issue_number),
     });
-    const dismiss = reviews.data.filter((review) => {
-      return (
-        review.state === 'CHANGES_REQUESTED' &&
-        review.user?.login === 'github-actions[bot]' &&
-        review.body.includes('You have added') &&
-        review.body.includes('files, please convert to ts(x).')
-      );
-    });
+    const dismiss = reviews.data.filter(
+      (review: {
+        state: string;
+        user: { login: string };
+        body: string | string[];
+      }) => {
+        return (
+          review.state === 'CHANGES_REQUESTED' &&
+          review.user?.login === 'github-actions[bot]' &&
+          review.body.includes('You have added') &&
+          review.body.includes('files, please convert to ts(x).')
+        );
+      }
+    );
 
     dismiss.map((d) => {
       return octokit.pulls.dismissReview({

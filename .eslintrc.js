@@ -11,7 +11,7 @@ module.exports = {
     '@typescript-eslint/indent': 'off',
     '@typescript-eslint/no-extra-parens': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-redeclare': 'error',
+    'no-redeclare': 'error',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
