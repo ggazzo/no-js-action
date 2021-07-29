@@ -28,14 +28,24 @@ async function run(): Promise<void> {
       pull_number: number,
     });
 
-    core.debug(JSON.stringify(files, null, 2));
     const ms: string = core.getInput('milliseconds');
-    core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
 
-    core.debug(new Date().toTimeString());
-    await wait(parseInt(ms, 10));
-    core.debug(new Date().toTimeString());
-
+    const invalidFiles = files.data.filter(
+      (file) =>
+        file.status === 'added' &&
+        (file.filename.endsWith('.js') || file.filename.endsWith('.jsx'))
+    );
+    if (invalidFiles.length > 0) {
+      const message = `${invalidFiles.length} js(x)? files are added, please convert to ts(x).`;
+      await octokit.pulls.createReview({
+        owner,
+        event: 'REQUEST_CHANGES',
+        repo,
+        pull_number: number,
+        body: message,
+      });
+      throw new Error(message);
+    }
     core.setOutput('time', new Date().toTimeString());
   } catch (error) {
     core.setFailed((error as any).message);
