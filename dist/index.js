@@ -60,7 +60,9 @@ function run() {
                 const jsx = invalidFiles.filter((name) => name.endsWith('.jsx'));
                 const jsMessage = js.length && `${js.length} .js`;
                 const jsxMessage = jsx.length && `${jsx.length} .jsx`;
-                const message = `You have added ${[jsMessage, jsxMessage].join(' and ')} files, please convert to ts(x). \n ${invalidFiles.join('\n')}`;
+                const message = `You have added ${[jsMessage, jsxMessage]
+                    .filter(Boolean)
+                    .join(' and ')} files, please convert to ts(x). \n ${invalidFiles.join('\n')}`;
                 yield octokit.pulls.createReview({
                     owner,
                     event: 'REQUEST_CHANGES',
