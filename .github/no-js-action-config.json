@@ -1,5 +1,5 @@
 {
   "added": {
-    "ignore": ["minimal.js", ".eslintrs.js"]
+    "ignore": ["minimal.js", ".eslintrs.js", "dist/**"]
   }
 }
