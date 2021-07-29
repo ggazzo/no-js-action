@@ -72,6 +72,27 @@ function run() {
                 });
                 throw new Error(message);
             }
+            const reviews = yield octokit.pulls.listReviews({
+                owner,
+                repo,
+                pull_number: parseInt(issue_number),
+            });
+            const dismiss = reviews.data.filter((review) => {
+                var _a;
+                return (review.state === 'CHANGES_REQUESTED' &&
+                    ((_a = review.user) === null || _a === void 0 ? void 0 : _a.login) === 'github-actions[bot]' &&
+                    review.body.includes('You have added') &&
+                    review.body.includes('files, please convert to ts(x).'));
+            });
+            dismiss.map((d) => {
+                return octokit.pulls.dismissReview({
+                    owner,
+                    repo,
+                    pull_number: parseInt(issue_number),
+                    review_id: d.id,
+                    message: 'removed js files',
+                });
+            });
             core.setOutput('time', new Date().toTimeString());
         }
         catch (error) {
