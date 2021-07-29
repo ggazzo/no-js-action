@@ -14,6 +14,8 @@ const octokit = new Octokit();
 
 async function run(): Promise<void> {
   try {
+    const payload = JSON.stringify(github.context.payload, undefined, 2);
+    console.log(`The event payload: ${payload}`);
     if (!github.context.payload.pull_request) {
       throw new Error('Not a pull request');
     }
@@ -35,10 +37,6 @@ async function run(): Promise<void> {
     core.debug(new Date().toTimeString());
 
     core.setOutput('time', new Date().toTimeString());
-
-    const payload = JSON.stringify(github.context.payload, undefined, 2);
-
-    console.log(`The event payload: ${payload}`);
   } catch (error) {
     core.setFailed((error as any).message);
   }
