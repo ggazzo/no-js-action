@@ -35,9 +35,11 @@ async function run(): Promise<void> {
       const jsMessage = js.length && `${js.length} .js`;
       const jsxMessage = jsx.length && `${jsx.length} .jsx`;
 
-      const message = `You have added ${[jsMessage, jsxMessage].join(
-        ' and '
-      )} files, please convert to ts(x). \n ${invalidFiles.join('\n')}`;
+      const message = `You have added ${[jsMessage, jsxMessage]
+        .filter(Boolean)
+        .join(' and ')} files, please convert to ts(x). \n ${invalidFiles.join(
+        '\n'
+      )}`;
 
       await octokit.pulls.createReview({
         owner,
