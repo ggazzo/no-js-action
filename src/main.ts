@@ -101,7 +101,7 @@ async function run(): Promise<void> {
         repo,
         pull_number: parseInt(issue_number),
         review_id: d.id,
-        message: 'removed js files',
+        message: 'js files removed',
       });
     });
 
