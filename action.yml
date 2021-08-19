@@ -1,11 +1,7 @@
-name: 'Guilherme Gazzo'
+name: 'No JS File'
 description: 'Prevent new JS files on pull requests'
-author: 'Rocket.chat'
+author: 'Guilherme Gazzo'
 inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
   configuration-path:
     description: 'config file path'
     required: true
