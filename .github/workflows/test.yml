@@ -1,7 +1,6 @@
 name: 'build-test'
 on: # rebuild any PRs and main branch changes
   pull_request:
-  push:
     branches:
       - main
       - 'releases/*'
@@ -22,3 +21,5 @@ jobs:
       - uses: ./
         with:
           milliseconds: 1000
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
