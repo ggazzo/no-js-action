@@ -39,13 +39,13 @@ async function run(): Promise<void> {
 
     const invalidFiles = files.data
       .filter((file: { status: string; filename: any }) => {
-        if (file.status === 'added') {
+        if (file.status !== 'added') {
           return false;
         }
         if (
           Array.isArray(added.ignore) &&
           added.ignore.some((ignore: string) =>
-            minimatch(file.filename, ignore as string)
+            minimatch(file.filename, ignore)
           )
         ) {
           return false;

@@ -67,10 +67,9 @@ function run() {
                 pull_number: parseInt(issue_number),
             });
             const { added } = yield getJSON(configPath);
-            const ms = core.getInput('milliseconds');
             const invalidFiles = files.data
                 .filter((file) => {
-                if (file.status === 'added') {
+                if (file.status !== 'added') {
                     return false;
                 }
                 if (Array.isArray(added.ignore) &&
@@ -4054,9 +4053,6 @@ function range(a, b, str) {
   var i = ai;
 
   if (ai >= 0 && bi > 0) {
-    if(a===b) {
-      return [ai, bi];
-    }
     begs = [];
     left = str.length;
 
