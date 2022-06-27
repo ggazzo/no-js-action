@@ -6,6 +6,9 @@ inputs:
     description: 'config file path'
     required: true
     default: '.github/no-js-action-config.json'
+  GITHUB_TOKEN:
+    description: 'Github token'
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
